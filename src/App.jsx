@@ -10,29 +10,40 @@ axios.defaults.baseURL = "http://localhost:3000"
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
-  
 
-  const handleLoginSuccess = () => {
+  // ตรวจสอบ Token เมื่อ Refresh หน้าจอ (Bonus: Remember Me)
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      // นำ Token กลับมาใส่ใน Header ของ Axios
+      axios.defaults.headers.common = { 'Authorization': `bearer ${savedToken}` };
+      setIsAuthenticated(true);
+      // ถ้าอยู่ที่หน้า login ให้เด้งไปหน้า books ทันที
+      if (window.location.pathname === '/login') {
+        navigate('/books');
+      }
+    }
+  }, []);
+
+  const handleLoginSuccess = (token, rememberMe) => {
     setIsAuthenticated(true);
-    // หลังจาก login สำเร็จ ให้เปลี่ยนหน้าไปที่รายการหนังสือ
-    navigate('/books'); 
+    // เก็บ Token ลง localStorage หากผู้ใช้เลือก Remember Me
+    if (rememberMe) {
+      localStorage.setItem('token', token);
+    }
+    navigate('/books');
   };
 
   return (
     <Routes>
-      {/* หน้า Login */}
       <Route 
         path="/login" 
         element={!isAuthenticated ? <LoginScreen onLoginSuccess={handleLoginSuccess}/> : <Navigate to="/books" />} 
       />
-
-      {/* หน้า BookScreen (Protected Route พื้นฐาน) */}
       <Route 
         path="/books" 
         element={isAuthenticated ? <BookScreen /> : <Navigate to="/login" />} 
       />
-
-      {/* Redirect ไปยังหน้า login หากเข้า path อื่นๆ */}
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
