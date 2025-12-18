@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect } from 'react';
-import { Divider, Spin, Button } from 'antd';
+import { Divider, Spin, Button, Space } from 'antd'; // เพิ่ม Space ตรงนี้
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import BookList from './components/BookList'
@@ -54,21 +54,24 @@ function BookScreen() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Book Store</h1>
-        <Button type="primary" onClick={() => navigate('/add-book')}>Add New Book</Button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: '20px' }}>
+        <h1 style={{ margin: 0 }}>Book Store</h1>
+        <Space>
+          <Button onClick={() => navigate('/categories')}>Manage Categories</Button>
+          <Button type="primary" onClick={() => navigate('/add-book')}>Add New Book</Button>
+        </Space>
       </div>
       <Divider>My Books List</Divider>
       <Spin spinning={loading}>
         <BookList 
           data={bookData} 
-          onLiked={handleLikeBook}
+          onLiked={handleLikeBook} 
           onDeleted={handleDeleteBook}
-          onEdit={book => navigate(`/edit-book/${book.id}`)}
+          onEdit={(book) => navigate(`/edit-book/${book.id}`)}
         />
       </Spin>
     </div>
-  )
+  );
 }
 
-export default BookScreen
+export default BookScreen;

@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import LoginScreen from './LoginScreen';
 import BookScreen from './BookScreen';
-import AddBook from './AddBookPage'; 
-import EditBook from './EditBookPage'; 
+import AddBook from './components/AddBook'; 
+import EditBook from './components/EditBook'; 
+import CategoryScreen from './CategoryScreen';
 
 axios.defaults.baseURL = "http://localhost:3000"
 
@@ -41,6 +42,11 @@ function App() {
       <Route 
         path="/books" 
         element={isAuthenticated ? <BookScreen /> : <Navigate to="/login" />} 
+      />
+      {/* เพิ่ม Route สำหรับ Categories */}
+      <Route 
+        path="/categories" 
+        element={isAuthenticated ? <CategoryScreen /> : <Navigate to="/login" />} 
       />
       <Route 
         path="/add-book" 
